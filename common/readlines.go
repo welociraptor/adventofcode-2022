@@ -7,10 +7,11 @@ import (
 	"strconv"
 )
 
-func ReadLines(filename string) ([]string, error) {
+func MustReadLines(filename string) []string {
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, err
+		fmt.Println("error reading lines: %w", err)
+		os.Exit(1)
 	}
 	defer file.Close()
 
@@ -20,15 +21,11 @@ func ReadLines(filename string) ([]string, error) {
 	for scanner.Scan() {
 		lines = append(lines, scanner.Text())
 	}
-	return lines, nil
+	return lines
 }
 
 func MustReadNumbers(filename string) []int {
-	lines, err := ReadLines(filename)
-	if err != nil {
-		fmt.Println("error reading lines: %w", err)
-		os.Exit(1)
-	}
+	lines := MustReadLines(filename)
 	var numbers []int
 	for _, in := range lines {
 		num, _ := strconv.Atoi(in)
